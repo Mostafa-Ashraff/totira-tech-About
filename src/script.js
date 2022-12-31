@@ -5,8 +5,9 @@ import * as dat from 'lil-gui'
 import testVertexShader from './shaders/test/vertex.glsl'
 import testFragmentShader from './shaders/test/fragment.glsl'
 import { MSDFTextGeometry, MSDFTextMaterial } from "three-msdf-text";
-import fnt from './fonts/IMPACT.TTF-msdf.fnt'
-import atlasURL from './fonts/IMPACTTTF.png'
+import fnt from './fonts/IMPACT.TTF-msdf.json'
+import atlasURL from './fonts/IMPACTTTF.png';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
 /**
  * Base
  */
@@ -44,8 +45,7 @@ const sizes = {
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () =>
-{
+window.addEventListener('resize', () => {
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -64,7 +64,7 @@ window.addEventListener('resize', () =>
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0.25, - 0.25, 1)
+camera.position.set(0.25, -0.25, 1)
 scene.add(camera)
 
 // Controls
@@ -83,8 +83,7 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 /**
  * Animate
  */
-const tick = () =>
-{
+const tick = () => {
     // Update controls
     controls.update()
 
@@ -95,4 +94,37 @@ const tick = () =>
     window.requestAnimationFrame(tick)
 }
 
-tick()
+tick();
+// text
+Promise.all([
+    loadFontAtlas(atlasURL),
+    loadFont('./fonts/IMPACT.TTF-msdf.json'),
+]).then(([atlas, font]) => {
+    const geometry = new MSDFTextGeometry({
+        text: "Hello World",
+        font: './fonts/IMPACT.TTF-msdf.json',
+    });
+    const material = new MSDFTextMaterial();
+    material.uniforms.uMap.value = atlas;
+
+    const mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh)
+});
+
+function loadFontAtlas(path) {
+    const promise = new Promise((resolve, reject) => {
+        const loader = new THREE.TextureLoader();
+        loader.load(path, resolve);
+    });
+
+    return promise;
+}
+
+function loadFont(path) {
+    const promise = new Promise((resolve, reject) => {
+        const loader = new FontLoader();
+        loader.load(path, resolve);
+    });
+
+    return promise;
+}

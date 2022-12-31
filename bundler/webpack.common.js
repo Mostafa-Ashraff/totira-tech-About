@@ -5,15 +5,13 @@ const path = require('path')
 
 module.exports = {
     entry: path.resolve(__dirname, '../src/script.js'),
-    output:
-    {
+    output: {
         hashFunction: 'xxhash64',
         filename: 'bundle.[contenthash].js',
         path: path.resolve(__dirname, '../dist')
     },
     devtool: 'source-map',
-    plugins:
-    [
+    plugins: [
         new CopyWebpackPlugin({
             patterns: [
                 { from: path.resolve(__dirname, '../static') }
@@ -25,15 +23,12 @@ module.exports = {
         }),
         new MiniCSSExtractPlugin()
     ],
-    module:
-    {
-        rules:
-        [
+    module: {
+        rules: [
             // HTML
             {
                 test: /\.(html)$/,
-                use:
-                [
+                use: [
                     'html-loader'
                 ]
             },
@@ -42,8 +37,7 @@ module.exports = {
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use:
-                [
+                use: [
                     'babel-loader'
                 ]
             },
@@ -51,8 +45,7 @@ module.exports = {
             // CSS
             {
                 test: /\.css$/,
-                use:
-                [
+                use: [
                     MiniCSSExtractPlugin.loader,
                     'css-loader'
                 ]
@@ -62,19 +55,18 @@ module.exports = {
             {
                 test: /\.(jpg|png|gif|svg)$/,
                 type: 'asset/resource',
-                generator:
-                {
+                generator: {
                     filename: 'assets/images/[hash][ext]'
                 }
             },
 
             // Fonts
             {
-                test: /\.(ttf|eot|woff|woff2)$/,
+                test: /\.(ttf|eot|woff|woff2|json)$/,
                 type: 'asset/resource',
-                generator:
-                {
-                    filename: 'assets/fonts/[hash][ext]'
+                generator: {
+                    filename: 'assets/fonts/[hash][ext]',
+                    path: '../src/fonts/IMPACT.TTF-msdf.json'
                 }
             },
 
@@ -82,8 +74,7 @@ module.exports = {
             {
                 test: /\.(glsl|vs|fs|vert|frag)$/,
                 type: 'asset/source',
-                generator:
-                {
+                generator: {
                     filename: 'assets/images/[hash][ext]'
                 }
             }
