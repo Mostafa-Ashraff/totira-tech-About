@@ -2,12 +2,10 @@ import './style.css'
 import * as THREE from 'three'
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 import * as dat from 'lil-gui'
-import testVertexShader from './shaders/test/vertex.glsl'
-import testFragmentShader from './shaders/test/fragment.glsl'
-import { MSDFTextGeometry, MSDFTextMaterial } from "three-msdf-text";
-import fnt from './fonts/IMPACT.TTF-msdf.json'
-import atlasURL from './fonts/IMPACTTTF.png';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
+import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
+
 /**
  * Base
  */
@@ -21,21 +19,102 @@ const canvas = document.querySelector('canvas.webgl')
 const scene = new THREE.Scene()
 
 /**
- * Test mesh
+ * Textures
  */
-// Geometry
-const geometry = new THREE.PlaneGeometry(1, 1, 32, 32)
+const textureLoader = new THREE.TextureLoader()
+const matcapTexture = textureLoader.load('textures/matcaps/8.png')
 
-// Material
-const material = new THREE.ShaderMaterial({
-    vertexShader: testVertexShader,
-    fragmentShader: testFragmentShader,
-    side: THREE.DoubleSide
-})
+/**
+ * Fonts
+ */
+const fontLoader = new FontLoader()
 
-// Mesh
-const mesh = new THREE.Mesh(geometry, material)
-scene.add(mesh)
+fontLoader.load(
+    '/fonts/helvetiker_regular.typeface.json',
+    (font) =>
+    {
+        // Material
+        const material = new THREE.MeshBasicMaterial({ color: 'white', wireframe: true })
+        // new THREE.ShaderMaterial({
+        //     side: DoubleSide,
+        //     transparent: true,
+        //     defines: {
+        //         IS_SMALL: false,
+        //     },
+        //     extensions: {
+        //         derivatives: true,
+        //     },
+        //     uniforms: {
+        //         // Common
+        //         ...uniforms.common,
+                
+        //         // Rendering
+        //         ...uniforms.rendering,
+                
+        //         // Strokes
+        //         ...uniforms.strokes,
+        //     },
+        //     vertexShader: `
+        //         // Attribute
+        //         #include <three_msdf_attributes>
+        
+        //         // Varyings
+        //         #include <three_msdf_varyings>
+        
+        //         void main() {
+        //             #include <three_msdf_vertex>
+        //         }
+        //     `,
+        //     fragmentShader: `
+        //         // Varyings
+        //         #include <three_msdf_varyings>
+        
+        //         // Uniforms
+        //         #include <three_msdf_common_uniforms>
+        //         #include <three_msdf_strokes_uniforms>
+        
+        //         // Utils
+        //         #include <three_msdf_median>
+        
+        //         void main() {
+        //             // Common
+        //             #include <three_msdf_common>
+        
+        //             // Strokes
+        //             #include <three_msdf_strokes>
+        
+        //             // Alpha Test
+        //             #include <three_msdf_alpha_test>
+        
+        //             // Outputs
+        //             #include <three_msdf_strokes_output>
+        //         }
+        //     `,
+        // });
+        // material.uniforms.uMap.value = atlas;
+        // Text
+        const textGeometry = new TextGeometry(
+            'Hello Three.js',
+            {
+                font: font,
+                size: 0.5,
+                height: 0.2,
+                curveSegments: 12,
+                bevelEnabled: true,
+                bevelThickness: 0.03,
+                bevelSize: 0.02,
+                bevelOffset: 0,
+                bevelSegments: 5
+            }
+        )
+        textGeometry.center()
+
+        const text = new THREE.Mesh(textGeometry, material)
+        scene.add(text)
+
+        
+    }
+)
 
 /**
  * Sizes
@@ -45,7 +124,8 @@ const sizes = {
     height: window.innerHeight
 }
 
-window.addEventListener('resize', () => {
+window.addEventListener('resize', () =>
+{
     // Update sizes
     sizes.width = window.innerWidth
     sizes.height = window.innerHeight
@@ -64,7 +144,9 @@ window.addEventListener('resize', () => {
  */
 // Base camera
 const camera = new THREE.PerspectiveCamera(75, sizes.width / sizes.height, 0.1, 100)
-camera.position.set(0.25, -0.25, 1)
+camera.position.x = 1
+camera.position.y = 1
+camera.position.z = 2
 scene.add(camera)
 
 // Controls
@@ -83,7 +165,12 @@ renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
 /**
  * Animate
  */
-const tick = () => {
+const clock = new THREE.Clock()
+
+const tick = () =>
+{
+    const elapsedTime = clock.getElapsedTime()
+
     // Update controls
     controls.update()
 
@@ -94,37 +181,4 @@ const tick = () => {
     window.requestAnimationFrame(tick)
 }
 
-tick();
-// text
-Promise.all([
-    loadFontAtlas(atlasURL),
-    loadFont('./fonts/IMPACT.TTF-msdf.json'),
-]).then(([atlas, font]) => {
-    const geometry = new MSDFTextGeometry({
-        text: "Hello World",
-        font: './fonts/IMPACT.TTF-msdf.json',
-    });
-    const material = new MSDFTextMaterial();
-    material.uniforms.uMap.value = atlas;
-
-    const mesh = new THREE.Mesh(geometry, material);
-    scene.add(mesh)
-});
-
-function loadFontAtlas(path) {
-    const promise = new Promise((resolve, reject) => {
-        const loader = new THREE.TextureLoader();
-        loader.load(path, resolve);
-    });
-
-    return promise;
-}
-
-function loadFont(path) {
-    const promise = new Promise((resolve, reject) => {
-        const loader = new FontLoader();
-        loader.load(path, resolve);
-    });
-
-    return promise;
-}
+tick()
