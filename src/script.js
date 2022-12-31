@@ -5,7 +5,12 @@ import * as dat from 'lil-gui'
 import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js'
 import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js'
 import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
+import VirtualScroll from 'virtual-scroll'
 
+// const scroller = new VirtualScroll()
+// scroller.on(event =>{
+//     wrapper.style.transform ='translateY(f'
+// })
 /**
  * Base
  */
@@ -34,7 +39,7 @@ fontLoader.load(
     (font) =>
     {
         // Material
-        const material = new THREE.MeshBasicMaterial({ color: 'white', wireframe: true })
+        const material = new THREE.MeshBasicMaterial({ color: 'white' })
         // new THREE.ShaderMaterial({
         //     side: DoubleSide,
         //     transparent: true,
@@ -93,24 +98,54 @@ fontLoader.load(
         // });
         // material.uniforms.uMap.value = atlas;
         // Text
-        const textGeometry = new TextGeometry(
-            'Hello Three.js',
-            {
-                font: font,
-                size: 0.5,
-                height: 0.2,
-                curveSegments: 12,
-                bevelEnabled: true,
-                bevelThickness: 0.03,
-                bevelSize: 0.02,
-                bevelOffset: 0,
-                bevelSegments: 5
-            }
-        )
-        textGeometry.center()
+        const texts = ['LOREMMMM',
+        'LOREMMMM',
+        'LOREMMMM',
+        'LOREMMMM',
+        'LOREMMMM',
+        'LOREMMMM',
+        'LOREMMMM',
+        'LOREMMMM',
+        'LOREMMMM',]
+        texts.forEach((txt, i)=>{
+            const textGeometry = new TextGeometry(
+                txt,
+                {   font: font,
+                    size: 0.2,
+                    height: 0.1,
+                    curveSegments: 12,
+                    bevelEnabled: false,
+                    bevelThickness: 0,
+                    bevelSize: 0,
+                    bevelOffset: 0,
+                    bevelSegments: 0}
+            )
+            textGeometry.center()
+            
+            const text = new THREE.Mesh(textGeometry, material)
+            text.position.y = (0.5*i)
+            text.rotation.y = Math.PI *0.12
+            
+            
+            scene.add(text)
+        })
+        // const textGeometry = new TextGeometry(
+        //     'Hello Three.js',
+        //     {
+        //         font: font,
+        //         size: 0.5,
+        //         height: 0.2,
+        //         curveSegments: 12,
+        //         bevelEnabled: true,
+        //         bevelThickness: 0,
+        //         bevelSize: 0.02,
+        //         bevelOffset: 0,
+        //         bevelSegments: 5
+        //     }
+        // )
+        // textGeometry.center()
 
-        const text = new THREE.Mesh(textGeometry, material)
-        scene.add(text)
+        
 
         
     }
@@ -157,7 +192,8 @@ controls.enableDamping = true
  * Renderer
  */
 const renderer = new THREE.WebGLRenderer({
-    canvas: canvas
+    canvas: canvas,
+    antialias: true
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
