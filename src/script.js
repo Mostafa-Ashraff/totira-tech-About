@@ -10,15 +10,17 @@ import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
 import VirtualScroll from 'virtual-scroll'
 import { Plane } from 'three'
 import {Text} from 'troika-three-text'
-import fnt from './fonts/IMPACT.TTF-msdf.json'
 
-var position = 0;
-const scroller = new VirtualScroll();
+
+let position = 0;
+let speed = 0;
+const scroller = new VirtualScroll()
 scroller.on(event => {
-        // wrapper.style.transform = 'translateY(f'
-        position = event.y / 2000;
-        console.log(position);
-    })
+	//wrapper.style.transform = `translateY(${event.y}px)`
+    position = event.y/2000;
+    speed = event.deltaY/1000
+    console.log(position)
+})
     /**
      * Base
      */
@@ -40,7 +42,7 @@ const matcapTexture = textureLoader.load('textures/matcaps/8.png')
 /**
  * Fonts
  */
-        // Text
+   // Text
         const texts = ['LOREMMMM',
             'LOREMMMM',
             'LOREMMMM',
@@ -51,22 +53,25 @@ const matcapTexture = textureLoader.load('textures/matcaps/8.png')
             'LOREMMMM',
             'LOREMMMM',
         ]
+        let textsGroup = new THREE.Group()
         texts.forEach((txt, i) => {
                 // scene.add(text)
                 const myText = new Text()
-                scene.add(myText)
+                textsGroup.add(myText)
 
                 // Set properties to configure:
-                myText.text = txt
+                myText.text = txt +i
                 myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
                 myText.fontSize = 0.3
-                myText.position.y = 0.5*i
+                let size =0.3*i
+                myText.position.y = size
                 myText.position.x = -1
                 myText.color = 0xFFCE07
-
+                scene.add(textsGroup)
                 // Update the rendering:
                 myText.sync()
             })
+
 
 /**
  * Sizes
@@ -127,6 +132,7 @@ const tick = () => {
     // controls.update()
 
     // Render
+    textsGroup.position.y = - position*0.3
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
@@ -139,18 +145,19 @@ tick();
 
 // Textures (change imgs)
 var textures = [...document.querySelectorAll('.js_texture')];
-console.log(textures);
 
 textures = textures.map((t) => {
 
     return new THREE.TextureLoader().load(t.src)
 })
 
+
+
 // =================================================
-var plane;
+var plane, materialObj;
 // object
 function addObjects() {
-    const materialObj = new THREE.ShaderMaterial({
+    materialObj = new THREE.ShaderMaterial({
         extensions: {
             derivatives: "#extension GL_OES_standard_derivatives : enable"
         },
@@ -178,9 +185,17 @@ function addObjects() {
 }
 addObjects();
 
+// update texture
+function updateTexture() {
+    console.log(Math.round(position));
+    let index = -(Math.round(position) % textures.length);
+    materialObj.uniforms.uTexture.value = textures[index];
+}
+
 // render
 function render() {
-    plane.rotation.y = -position;
+    updateTexture();
+    plane.rotation.y = -position * 2 * Math.PI;
     requestAnimationFrame(render);
     // console.log(plane.rotation.y);
 }
