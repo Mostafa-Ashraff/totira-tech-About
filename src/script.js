@@ -9,7 +9,7 @@ import fragment from './shaders/test/fragment.glsl'
 import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
 import VirtualScroll from 'virtual-scroll'
 import { Plane } from 'three'
-import { Text } from 'troika-three-text'
+import {Text} from 'troika-three-text'
 
 
 var position = 0;
@@ -40,33 +40,34 @@ const matcapTexture = textureLoader.load('textures/matcaps/8.png')
 /**
  * Fonts
  */
-// Text
-const texts = ['LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-]
-texts.forEach((txt, i) => {
-    // scene.add(text)
-    const myText = new Text()
-    scene.add(myText)
 
-    // Set properties to configure:
-    myText.text = txt + i
-    myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
-    myText.fontSize = 0.3
-    myText.position.y = 0.5 * i
-    myText.position.x = -1
-    myText.color = 0xFFCE07
+   // Text
+        const texts = ['LOREMMMM',
+            'LOREMMMM',
+            'LOREMMMM',
+            'LOREMMMM',
+            'LOREMMMM',
+            'LOREMMMM',
+            'LOREMMMM',
+            'LOREMMMM',
+            'LOREMMMM',
+        ]
+        texts.forEach((txt, i) => {
+                // scene.add(text)
+                const myText = new Text()
+                scene.add(myText)
 
-    // Update the rendering:
-    myText.sync()
-})
+                // Set properties to configure:
+                myText.text = txt
+                myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
+                myText.fontSize = 0.3
+                myText.position.y = 0.5*i
+                myText.position.x = -1
+                myText.color = 0xFFCE07
+
+                // Update the rendering:
+                myText.sync()
+            })
 
 
 /**
