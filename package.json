@@ -22,6 +22,7 @@
     "style-loader": "^3.3.1",
     "three": "^0.140.0",
     "three-msdf-text": "github:leochocolat/three-msdf-text",
+    "troika-three-text": "^0.47.1",
     "virtual-scroll": "^2.2.1",
     "webpack": "^5.72.0",
     "webpack-cli": "^4.9.2",
