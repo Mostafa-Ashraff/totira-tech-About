@@ -231,18 +231,19 @@ tick();
 
 // Textures (change imgs)
 var textures = [...document.querySelectorAll('.js_texture')];
-console.log(textures);
 
 textures = textures.map((t) => {
 
     return new THREE.TextureLoader().load(t.src)
 })
 
+
+
 // =================================================
-var plane;
+var plane, materialObj;
 // object
 function addObjects() {
-    const materialObj = new THREE.ShaderMaterial({
+    materialObj = new THREE.ShaderMaterial({
         extensions: {
             derivatives: "#extension GL_OES_standard_derivatives : enable"
         },
@@ -270,9 +271,17 @@ function addObjects() {
 }
 addObjects();
 
+// update texture
+function updateTexture() {
+    console.log(Math.round(position));
+    let index = -(Math.round(position) % textures.length);
+    materialObj.uniforms.uTexture.value = textures[index];
+}
+
 // render
 function render() {
-    plane.rotation.y = -position;
+    updateTexture();
+    plane.rotation.y = -position * 2 * Math.PI;
     requestAnimationFrame(render);
     // console.log(plane.rotation.y);
 }
