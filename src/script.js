@@ -134,6 +134,7 @@ fontLoader.load(
                 const text = new THREE.Mesh(textGeometry, material)
                 text.position.y = (0.5 * i)
                 text.rotation.y = Math.PI * 0.12
+                    // text.position.x = 1
 
 
                 scene.add(text)
@@ -225,6 +226,19 @@ const tick = () => {
 }
 
 tick();
+
+// ================================================================
+
+// Textures (change imgs)
+var textures = [...document.querySelectorAll('.js_texture')];
+console.log(textures);
+
+textures = textures.map((t) => {
+
+    return new THREE.TextureLoader().load(t.src)
+})
+
+// =================================================
 var plane;
 // object
 function addObjects() {
@@ -235,12 +249,13 @@ function addObjects() {
         side: THREE.DoubleSide,
         uniforms: {
             time: { value: 0 },
+            uTexture: { value: textures[0] },
             resolution: { value: new THREE.Vector4() },
         },
         vertexShader: vertex,
         fragmentShader: fragment
     });
-    const geometry = new THREE.PlaneGeometry(1.77, 1, 1, 1).translate(0, 0, 1);
+    const geometry = new THREE.PlaneGeometry(1.77, 1, 30, 30).translate(0, 0, 1);
     let pos = geometry.attributes.position;
     // let newPos = [];
     // for (let i = 0; i < pos.length; i += 3) {
