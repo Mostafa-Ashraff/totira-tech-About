@@ -281,6 +281,7 @@ function updateTexture() {
 // render
 function render() {
     updateTexture();
+    plane.position.y = 1;
     plane.rotation.y = -position * 2 * Math.PI;
     requestAnimationFrame(render);
     // console.log(plane.rotation.y);
