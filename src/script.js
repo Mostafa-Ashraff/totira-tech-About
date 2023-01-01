@@ -12,12 +12,15 @@ import { Plane } from 'three'
 import { Text } from 'troika-three-text'
 
 
-var position = 0;
-const scroller = new VirtualScroll();
+
+let position = 0;
+let speed = 0;
+const scroller = new VirtualScroll()
 scroller.on(event => {
-        // wrapper.style.transform = 'translateY(f'
+        //wrapper.style.transform = `translateY(${event.y}px)`
         position = event.y / 2000;
-        console.log(position);
+        speed = event.deltaY / 1000
+        console.log(position)
     })
     /**
      * Base
@@ -48,25 +51,31 @@ const texts = ['LOREMMMM',
     'LOREMMMM',
     'LOREMMMM',
     'LOREMMMM',
-
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
 ]
+let textsGroup = new THREE.Group();
+
 texts.forEach((txt, i) => {
     // scene.add(text)
     const myText = new Text()
-    scene.add(myText);
-    // sceneCopy.add(myText);
+    textsGroup.add(myText);
+    // textsGroup.position.y = 1.5;
 
     // Set properties to configure:
     myText.text = txt + i
     myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
     myText.fontSize = 0.3
-    myText.position.y = 0.5 * i
+    let size = 0.4 * i
+    myText.position.y = size
     myText.position.x = 0
     myText.color = 0xFFCE07
-
-    // Update the rendering:
+    scene.add(textsGroup)
+        // Update the rendering:
     myText.sync()
 })
+
 
 
 /**
@@ -128,6 +137,7 @@ const tick = () => {
     // controls.update()
 
     // Render
+    textsGroup.position.y = -position * 0.4
     renderer.render(scene, camera)
 
     // Call tick again on the next frame
@@ -176,6 +186,7 @@ function addObjects() {
     // }
     // geometry.setAttribute('position', new THREE.Float32BufferAttribute(newPos, 3));
     plane = new THREE.Mesh(geometry, materialObj);
+
     scene.add(plane);
 }
 addObjects();
@@ -184,7 +195,7 @@ addObjects();
 function updateTexture() {
     console.log(Math.round(position));
     let index = -(Math.round(position) % textures.length);
-    materialObj.uniforms.uTexture.value = textures[index];
+    materialObj.uniforms.uTexture.value = textures[Math.abs(index)];
 }
 
 // render
