@@ -9,18 +9,19 @@ import fragment from './shaders/test/fragment.glsl'
 import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
 import VirtualScroll from 'virtual-scroll'
 import { Plane } from 'three'
-import {Text} from 'troika-three-text'
+import { Text } from 'troika-three-text'
+
 
 
 let position = 0;
 let speed = 0;
 const scroller = new VirtualScroll()
 scroller.on(event => {
-	//wrapper.style.transform = `translateY(${event.y}px)`
-    position = event.y/2000;
-    speed = event.deltaY/1000
-    console.log(position)
-})
+        //wrapper.style.transform = `translateY(${event.y}px)`
+        position = event.y / 2000;
+        speed = event.deltaY / 1000
+        console.log(position)
+    })
     /**
      * Base
      */
@@ -31,7 +32,8 @@ const gui = new dat.GUI()
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
+const sceneCopy = new THREE.Scene()
 
 /**
  * Textures
@@ -42,35 +44,53 @@ const matcapTexture = textureLoader.load('textures/matcaps/8.png')
 /**
  * Fonts
  */
-   // Text
-        const texts = ['LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-        ]
-        let textsGroup = new THREE.Group()
-        texts.forEach((txt, i) => {
-                // scene.add(text)
-                const myText = new Text()
-                textsGroup.add(myText)
+// Text
+const texts = ['LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+]
+let textsGroup = new THREE.Group();
+let textsGroupCopy = new THREE.Group();
+texts.forEach((txt, i) => {
+    // scene.add(text)
+    const myText = new Text()
+    const myText2 = new Text()
+    textsGroup.add(myText);
+    textsGroupCopy.add(myText2);
+    // textsGroup.position.y = 1.5;
 
-                // Set properties to configure:
-                myText.text = txt +i
-                myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
-                myText.fontSize = 0.3
-                let size =0.3*i
-                myText.position.y = size
-                myText.position.x = -1
-                myText.color = 0xFFCE07
-                scene.add(textsGroup)
-                // Update the rendering:
-                myText.sync()
-            })
+    // Set properties to configure:
+    myText.text = txt + i
+    myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
+    myText.fontSize = 0.3
+    let size = 0.4 * i
+    myText.position.y = -size
+    myText.position.x = 0
+    myText.color = 0xFFCE07
+    scene.add(textsGroup)
+    
+    
+    myText2.text = txt + i
+    myText2.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
+    myText2.fontSize = 0.3
+    myText2.position.y = -size
+    myText2.position.x = 0
+    myText2.color = 0xFFCE07
+    scene.add(textsGroup)
+    sceneCopy.add(textsGroupCopy)
+        // Update the rendering:
+    myText.sync()
+    myText2.sync()
+    
+})
+
 
 
 /**
@@ -119,7 +139,9 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
+renderer.autoClear = false
+renderer.sortObjects = false;
+// sceneCopy.renderOrder = 1
 /**
  * Animate
  */
@@ -131,10 +153,12 @@ const tick = () => {
     // Update controls
     // controls.update()
 
-    // Render
-    textsGroup.position.y = - position*0.3
+    // Render#
+    textsGroup.position.y = -position * 0.4 +3
+    textsGroupCopy.position.y = -position * 0.4 +3
     renderer.render(scene, camera)
-
+    renderer.clearDepth()
+    renderer.render(sceneCopy, camera)
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
@@ -181,20 +205,43 @@ function addObjects() {
     // }
     // geometry.setAttribute('position', new THREE.Float32BufferAttribute(newPos, 3));
     plane = new THREE.Mesh(geometry, materialObj);
+
     scene.add(plane);
 }
 addObjects();
 
 // update texture
 function updateTexture() {
-    console.log(Math.round(position));
-    let index = -(Math.round(position) % textures.length);
-    materialObj.uniforms.uTexture.value = textures[index];
+    //console.log(Math.round(position));
+    let index = -(Math.round(position *10000) % textures.length);
+    materialObj.uniforms.uTexture.value = textures[Math.abs(index)];
+    console.log((Math.round(position) % textures.length))
+    
+   // console.log(textsGroup.children)
+
+   let showIndex = (Math.round(position) % textures.length)
+   if(showIndex == 4){
+        showIndex -=4
+   }else{
+    showIndex= Math.abs(showIndex -4)
+   }
+
+    textsGroupCopy.children.forEach((text, i) =>{
+        if (showIndex == i){
+            text.visible = true
+        }else{
+            
+            text.visible = false
+        }
+    })
+
 }
 
 // render
 function render() {
     updateTexture();
+    plane.position.y = 1;
+    plane.position.x = 1;
     plane.rotation.y = -position * 2 * Math.PI;
     requestAnimationFrame(render);
     // console.log(plane.rotation.y);
