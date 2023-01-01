@@ -40,6 +40,7 @@ const matcapTexture = textureLoader.load('textures/matcaps/8.png')
 /**
  * Fonts
  */
+
    // Text
         const texts = ['LOREMMMM',
             'LOREMMMM',
@@ -165,7 +166,7 @@ function addObjects() {
         vertexShader: vertex,
         fragmentShader: fragment
     });
-    const geometry = new THREE.PlaneGeometry(1.77, 1, 30, 30).translate(0, 0, 1);
+    const geometry = new THREE.PlaneGeometry(1.77, 1, 30, 30).translate(0, 0, .7);
     let pos = geometry.attributes.position;
     // let newPos = [];
     // for (let i = 0; i < pos.length; i += 3) {
@@ -190,6 +191,8 @@ function updateTexture() {
 // render
 function render() {
     updateTexture();
+    plane.position.y = 1;
+    plane.position.x = 0;
     plane.rotation.y = -position * 2 * Math.PI;
     requestAnimationFrame(render);
     // console.log(plane.rotation.y);
