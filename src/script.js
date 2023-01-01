@@ -54,13 +54,16 @@ const texts = ['LOREMMMM',
     'LOREMMMM',
     'LOREMMMM',
     'LOREMMMM',
+    'LOREMMMM',
 ]
 let textsGroup = new THREE.Group();
-
+let textsGroupCopy = new THREE.Group();
 texts.forEach((txt, i) => {
     // scene.add(text)
     const myText = new Text()
+    const myText2 = new Text()
     textsGroup.add(myText);
+    textsGroupCopy.add(myText2);
     // textsGroup.position.y = 1.5;
 
     // Set properties to configure:
@@ -68,12 +71,24 @@ texts.forEach((txt, i) => {
     myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
     myText.fontSize = 0.3
     let size = 0.4 * i
-    myText.position.y = size
+    myText.position.y = -size
     myText.position.x = 0
     myText.color = 0xFFCE07
     scene.add(textsGroup)
+    
+    
+    myText2.text = txt + i
+    myText2.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
+    myText2.fontSize = 0.3
+    myText2.position.y = -size
+    myText2.position.x = 0
+    myText2.color = 0xFFCE07
+    scene.add(textsGroup)
+    sceneCopy.add(textsGroupCopy)
         // Update the rendering:
     myText.sync()
+    myText2.sync()
+    
 })
 
 
@@ -124,7 +139,9 @@ const renderer = new THREE.WebGLRenderer({
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
-
+renderer.autoClear = false
+renderer.sortObjects = false;
+// sceneCopy.renderOrder = 1
 /**
  * Animate
  */
@@ -136,10 +153,12 @@ const tick = () => {
     // Update controls
     // controls.update()
 
-    // Render
-    textsGroup.position.y = -position * 0.4
+    // Render#
+    textsGroup.position.y = -position * 0.4 +3
+    textsGroupCopy.position.y = -position * 0.4 +3
     renderer.render(scene, camera)
-
+    renderer.clearDepth()
+    renderer.render(sceneCopy, camera)
     // Call tick again on the next frame
     window.requestAnimationFrame(tick)
 }
@@ -193,9 +212,29 @@ addObjects();
 
 // update texture
 function updateTexture() {
-    console.log(Math.round(position));
-    let index = -(Math.round(position) % textures.length);
+    //console.log(Math.round(position));
+    let index = -(Math.round(position *10000) % textures.length);
     materialObj.uniforms.uTexture.value = textures[Math.abs(index)];
+    console.log((Math.round(position) % textures.length))
+    
+   // console.log(textsGroup.children)
+
+   let showIndex = (Math.round(position) % textures.length)
+   if(showIndex == 4){
+        showIndex -=4
+   }else{
+    showIndex= Math.abs(showIndex -4)
+   }
+
+    textsGroupCopy.children.forEach((text, i) =>{
+        if (showIndex == i){
+            text.visible = true
+        }else{
+            
+            text.visible = false
+        }
+    })
+
 }
 
 // render
