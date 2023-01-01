@@ -9,7 +9,7 @@ import fragment from './shaders/test/fragment.glsl'
 import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
 import VirtualScroll from 'virtual-scroll'
 import { Plane } from 'three'
-import {Text} from 'troika-three-text'
+import { Text } from 'troika-three-text'
 
 
 var position = 0;
@@ -40,33 +40,33 @@ const matcapTexture = textureLoader.load('textures/matcaps/8.png')
 /**
  * Fonts
  */
-   // Text
-        const texts = ['LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-            'LOREMMMM',
-        ]
-        texts.forEach((txt, i) => {
-                // scene.add(text)
-                const myText = new Text()
-                scene.add(myText)
+// Text
+const texts = ['LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+    'LOREMMMM',
+]
+texts.forEach((txt, i) => {
+    // scene.add(text)
+    const myText = new Text()
+    scene.add(myText)
 
-                // Set properties to configure:
-                myText.text = txt
-                myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
-                myText.fontSize = 0.3
-                myText.position.y = 0.5*i
-                myText.position.x = -1
-                myText.color = 0xFFCE07
+    // Set properties to configure:
+    myText.text = txt + i
+    myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
+    myText.fontSize = 0.3
+    myText.position.y = 0.5 * i
+    myText.position.x = -1
+    myText.color = 0xFFCE07
 
-                // Update the rendering:
-                myText.sync()
-            })
+    // Update the rendering:
+    myText.sync()
+})
 
 
 /**
@@ -165,7 +165,7 @@ function addObjects() {
         vertexShader: vertex,
         fragmentShader: fragment
     });
-    const geometry = new THREE.PlaneGeometry(1.77, 1, 30, 30).translate(0, 0, 1);
+    const geometry = new THREE.PlaneGeometry(1.77, 1, 30, 30).translate(0, 0, .7);
     let pos = geometry.attributes.position;
     // let newPos = [];
     // for (let i = 0; i < pos.length; i += 3) {
@@ -191,6 +191,7 @@ function updateTexture() {
 function render() {
     updateTexture();
     plane.position.y = 1;
+    plane.position.x = 0;
     plane.rotation.y = -position * 2 * Math.PI;
     requestAnimationFrame(render);
     // console.log(plane.rotation.y);
