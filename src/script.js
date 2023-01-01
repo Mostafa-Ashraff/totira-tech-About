@@ -29,7 +29,8 @@ const gui = new dat.GUI()
 const canvas = document.querySelector('canvas.webgl')
 
 // Scene
-const scene = new THREE.Scene()
+const scene = new THREE.Scene();
+const sceneCopy = new THREE.Scene()
 
 /**
  * Textures
@@ -47,21 +48,20 @@ const texts = ['LOREMMMM',
     'LOREMMMM',
     'LOREMMMM',
     'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
-    'LOREMMMM',
+
 ]
 texts.forEach((txt, i) => {
     // scene.add(text)
     const myText = new Text()
-    scene.add(myText)
+    scene.add(myText);
+    // sceneCopy.add(myText);
 
     // Set properties to configure:
     myText.text = txt + i
     myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
     myText.fontSize = 0.3
     myText.position.y = 0.5 * i
-    myText.position.x = -1
+    myText.position.x = 0
     myText.color = 0xFFCE07
 
     // Update the rendering:
@@ -165,7 +165,7 @@ function addObjects() {
         vertexShader: vertex,
         fragmentShader: fragment
     });
-    const geometry = new THREE.PlaneGeometry(1.77, 1, 30, 30).translate(0, 0, .7);
+    const geometry = new THREE.PlaneGeometry(1.77, 1, 30, 30).translate(0, 0, 1);
     let pos = geometry.attributes.position;
     // let newPos = [];
     // for (let i = 0; i < pos.length; i += 3) {
@@ -191,7 +191,7 @@ function updateTexture() {
 function render() {
     updateTexture();
     plane.position.y = 1;
-    plane.position.x = 0;
+    plane.position.x = 1;
     plane.rotation.y = -position * 2 * Math.PI;
     requestAnimationFrame(render);
     // console.log(plane.rotation.y);
