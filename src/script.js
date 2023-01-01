@@ -9,7 +9,7 @@ import fragment from './shaders/test/fragment.glsl'
 import typefaceFont from 'three/examples/fonts/helvetiker_regular.typeface.json'
 import VirtualScroll from 'virtual-scroll'
 import { Plane } from 'three'
-
+import {Text} from 'troika-three-text'
 
 
 var position = 0;
@@ -40,71 +40,7 @@ const matcapTexture = textureLoader.load('textures/matcaps/8.png')
 /**
  * Fonts
  */
-const fontLoader = new FontLoader()
-
-fontLoader.load(
-    '/fonts/helvetiker_regular.typeface.json',
-    (font) => {
-        // Material
-        const material = new THREE.MeshBasicMaterial({ color: 'white' })
-            // new THREE.ShaderMaterial({
-            //     side: DoubleSide,
-            //     transparent: true,
-            //     defines: {
-            //         IS_SMALL: false,
-            //     },
-            //     extensions: {
-            //         derivatives: true,
-            //     },
-            //     uniforms: {
-            //         // Common
-            //         ...uniforms.common,
-
-        //         // Rendering
-        //         ...uniforms.rendering,
-
-        //         // Strokes
-        //         ...uniforms.strokes,
-        //     },
-        //     vertexShader: `
-        //         // Attribute
-        //         #include <three_msdf_attributes>
-
-        //         // Varyings
-        //         #include <three_msdf_varyings>
-
-        //         void main() {
-        //             #include <three_msdf_vertex>
-        //         }
-        //     `,
-        //     fragmentShader: `
-        //         // Varyings
-        //         #include <three_msdf_varyings>
-
-        //         // Uniforms
-        //         #include <three_msdf_common_uniforms>
-        //         #include <three_msdf_strokes_uniforms>
-
-        //         // Utils
-        //         #include <three_msdf_median>
-
-        //         void main() {
-        //             // Common
-        //             #include <three_msdf_common>
-
-        //             // Strokes
-        //             #include <three_msdf_strokes>
-
-        //             // Alpha Test
-        //             #include <three_msdf_alpha_test>
-
-        //             // Outputs
-        //             #include <three_msdf_strokes_output>
-        //         }
-        //     `,
-        // });
-        // material.uniforms.uMap.value = atlas;
-        // Text
+   // Text
         const texts = ['LOREMMMM',
             'LOREMMMM',
             'LOREMMMM',
@@ -116,50 +52,22 @@ fontLoader.load(
             'LOREMMMM',
         ]
         texts.forEach((txt, i) => {
-                const textGeometry = new TextGeometry(
-                    txt, {
-                        font: font,
-                        size: 0.2,
-                        height: 0.1,
-                        curveSegments: 12,
-                        bevelEnabled: false,
-                        bevelThickness: 0,
-                        bevelSize: 0,
-                        bevelOffset: 0,
-                        bevelSegments: 0
-                    }
-                )
-                textGeometry.center()
+                // scene.add(text)
+                const myText = new Text()
+                scene.add(myText)
 
-                const text = new THREE.Mesh(textGeometry, material)
-                text.position.y = (0.5 * i)
-                text.rotation.y = Math.PI * 0.12
-                    // text.position.x = 1
+                // Set properties to configure:
+                myText.text = txt
+                myText.font = 'https://fonts.gstatic.com/s/monoton/v9/5h1aiZUrOngCibe4fkU.woff'
+                myText.fontSize = 0.3
+                myText.position.y = 0.5*i
+                myText.position.x = -1
+                myText.color = 0xFFCE07
 
-
-                scene.add(text)
+                // Update the rendering:
+                myText.sync()
             })
-            // const textGeometry = new TextGeometry(
-            //     'Hello Three.js',
-            //     {
-            //         font: font,
-            //         size: 0.5,
-            //         height: 0.2,
-            //         curveSegments: 12,
-            //         bevelEnabled: true,
-            //         bevelThickness: 0,
-            //         bevelSize: 0.02,
-            //         bevelOffset: 0,
-            //         bevelSegments: 5
-            //     }
-            // )
-            // textGeometry.center()
 
-
-
-
-    }
-)
 
 /**
  * Sizes
@@ -202,7 +110,8 @@ scene.add(camera)
  */
 const renderer = new THREE.WebGLRenderer({
     canvas: canvas,
-    antialias: true
+    antialias: true,
+    alpha: true
 })
 renderer.setSize(sizes.width, sizes.height)
 renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))

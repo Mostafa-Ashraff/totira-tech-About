@@ -7,6 +7,8 @@ html,
 body {
     overflow: hidden;
     overscroll-behavior: none;
+    background-color: #231F20;
+
 }
 
 .webgl {
